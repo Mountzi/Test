@@ -1,0 +1,73 @@
+#include <Adafruit_NeoPixel.h>
+
+const int numPixels = 10;  // Anzahl der verwendeten LEDs
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(numPixels, 6, NEO_GRB + NEO_KHZ800);
+
+int weatherId = 800;  // aktuelle Wetter-ID
+int rainCases[] = {800, 801, 802, 803, 804, 600, 601, 602, 611, 612, 615, 616, 620, 500, 501, 502, 503, 504, 511, 520, 521, 522, 531};
+int thunderCases[] = {200, 201, 202, 210, 211, 212, 221, 230, 231, 232};
+int drizzleCases[] = {300, 301, 302, 310, 311, 312, 313, 314, 321};
+
+void setup() {
+  pixels.begin();
+}
+
+void loop() {
+  displayWeatherAnimation(weatherId);
+}
+
+void displayWeatherAnimation(int id) {
+  if (isInArray(id, rainCases, sizeof(rainCases)/sizeof(int))) {
+    displayRain();
+  } else if (isInArray(id, thunderCases, sizeof(thunderCases)/sizeof(int))) {
+    displayThunderstorm();
+  } else if (isInArray(id, drizzleCases, sizeof(drizzleCases)/sizeof(int))) {
+    displayDrizzle();
+  } else {
+    displaySun();
+  }
+}
+
+bool isInArray(int val, int *arr, int size) {
+  for (int i = 0; i < size; i++) {
+    if (arr[i] == val) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void displaySun() {
+  for (int i = 0; i < numPixels; i++) {
+    pixels.setPixelColor(i, pixels.Color(255, 165, 0));
+    pixels.show();
+    delay(100);
+  }
+}
+
+void displayRain() {
+  for (int i = 0; i < numPixels; i++) {
+    pixels.setPixelColor(i, pixels.Color(0, 128, 255));
+    pixels.show();
+    delay(500);
+  }
+}
+
+void displayThunderstorm() {
+  for (int i = 0; i < numPixels; i++) {
+    pixels.setPixelColor(i, pixels.Color(255, 255, 0));
+    pixels.show();
+    delay(50);
+    pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+    pixels.show();
+    delay(50);
+  }
+}
+
+void displayDrizzle() {
+  for (int i = 0; i < numPixels; i++) {
+    pixels.setPixelColor(i, pixels.Color(0, 128, 255));
+    pixels.show();
+    delay(500);
+  }
+}
