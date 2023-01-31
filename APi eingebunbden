@@ -1,0 +1,49 @@
+#include <Adafruit_NeoPixel.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* ssid = "YourSSID";
+const char* password = "YourPassword";
+const char* host = "api.openweathermap.org";
+const char* weatherApiKey = "YourOpenWeatherMapApiKey";
+
+const int numPixels = 10; // Anzahl der verwendeten LEDs
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(numPixels, 6, NEO_GRB + NEO_KHZ800);
+
+int weatherId = 800; // aktuelle Wetter-ID
+int rainCases[] = {800, 801, 802, 803, 804, 600, 601, 602, 611, 612, 615, 616, 620, 500, 501, 502, 503, 504, 511, 520, 521, 522, 531};
+int thunderCases[] = {200, 201, 202, 210, 211, 212, 221, 230, 231, 232};
+int drizzleCases[] = {300, 301, 302, 310, 311, 312, 313, 314, 321};
+int snowCases[] = {600, 601, 602, 611, 612, 615, 616, 620};
+int mistCases[] = {701, 711, 721, 731, 741, 751, 761, 762, 771, 781};
+int cloudsCases[] = {801, 802, 803, 804};
+
+void setup() {
+pixels.begin();
+WiFi.begin(ssid, password);
+while (WiFi.status() != WL_CONNECTED) {
+delay(1000);
+}
+getWeather();
+}
+
+void loop() {
+displayWeatherAnimation(weatherId);
+}
+
+void displayWeatherAnimation(int id) {
+if (isInArray(id, rainCases, sizeof(rainCases)/sizeof(int))) {
+displayRain();
+} else if (isInArray(id, thunderCases, sizeof(thunderCases)/sizeof(int))) {
+displayThunderstorm();
+} else if (isInArray(id, drizzleCases, sizeof(drizzleCases)/sizeof(int))) {
+displayDrizzle();
+} else if (isInArray(id, snowCases, sizeof(snowCases)/sizeof(int))) {
+displaySnow();
+} else if (isInArray(id, mistCases, sizeof(mistCases)/sizeof(int))) {
+displayMist();
+} else if (isInArray(id, cloudsCases, sizeof(cloudsCases)/sizeof(int))) {
+displayClouds();
+} else {
+displaySun
+}}
